@@ -1,0 +1,97 @@
+From: Benjamin Drung <benjamin.drung@canonical.com>
+Date: Wed, 16 Nov 2022 15:17:52 +0100
+Subject: Update timezones to tzdata 2022f
+
+Update `all_timezones` and `common_timezones` to tzdata 2022f.
+
+Bug-Ubuntu: https://launchpad.net/bugs/1995864
+Signed-off-by: Benjamin Drung <benjamin.drung@canonical.com>
+---
+ pytz/__init__.py          | 10 +++-------
+ pytz/tests/test_tzinfo.py |  2 +-
+ 2 files changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/pytz/__init__.py b/pytz/__init__.py
+index 5a1b816..3636bdf 100644
+--- a/pytz/__init__.py
++++ b/pytz/__init__.py
+@@ -22,7 +22,7 @@ from pytz.tzfile import build_tzinfo
+ 
+ 
+ # The IANA (nee Olson) database is updated several times a year.
+-OLSON_VERSION = '2022a'
++OLSON_VERSION = '2022f'
+ VERSION = '2022.1'  # pip compatible version number.
+ __version__ = VERSION
+ 
+@@ -964,6 +964,7 @@ all_timezones = \
+  'Europe/Kaliningrad',
+  'Europe/Kiev',
+  'Europe/Kirov',
++ 'Europe/Kyiv',
+  'Europe/Lisbon',
+  'Europe/Ljubljana',
+  'Europe/London',
+@@ -1266,7 +1267,6 @@ common_timezones = \
+  'America/Montserrat',
+  'America/Nassau',
+  'America/New_York',
+- 'America/Nipigon',
+  'America/Nome',
+  'America/Noronha',
+  'America/North_Dakota/Beulah',
+@@ -1283,7 +1283,6 @@ common_timezones = \
+  'America/Porto_Velho',
+  'America/Puerto_Rico',
+  'America/Punta_Arenas',
+- 'America/Rainy_River',
+  'America/Rankin_Inlet',
+  'America/Recife',
+  'America/Regina',
+@@ -1304,7 +1303,6 @@ common_timezones = \
+  'America/Swift_Current',
+  'America/Tegucigalpa',
+  'America/Thule',
+- 'America/Thunder_Bay',
+  'America/Tijuana',
+  'America/Toronto',
+  'America/Tortola',
+@@ -1456,8 +1454,8 @@ common_timezones = \
+  'Europe/Istanbul',
+  'Europe/Jersey',
+  'Europe/Kaliningrad',
+- 'Europe/Kiev',
+  'Europe/Kirov',
++ 'Europe/Kyiv',
+  'Europe/Lisbon',
+  'Europe/Ljubljana',
+  'Europe/London',
+@@ -1485,7 +1483,6 @@ common_timezones = \
+  'Europe/Tallinn',
+  'Europe/Tirane',
+  'Europe/Ulyanovsk',
+- 'Europe/Uzhgorod',
+  'Europe/Vaduz',
+  'Europe/Vatican',
+  'Europe/Vienna',
+@@ -1493,7 +1490,6 @@ common_timezones = \
+  'Europe/Volgograd',
+  'Europe/Warsaw',
+  'Europe/Zagreb',
+- 'Europe/Zaporozhye',
+  'Europe/Zurich',
+  'GMT',
+  'Indian/Antananarivo',
+diff --git a/pytz/tests/test_tzinfo.py b/pytz/tests/test_tzinfo.py
+index 1d67de6..6cb2d3d 100644
+--- a/pytz/tests/test_tzinfo.py
++++ b/pytz/tests/test_tzinfo.py
+@@ -28,7 +28,7 @@ from pytz.tzinfo import DstTzInfo, StaticTzInfo  # noqa
+ # I test for expected version to ensure the correct version of pytz is
+ # actually being tested.
+ EXPECTED_VERSION = '2022.1'
+-EXPECTED_OLSON_VERSION = '2022a'
++EXPECTED_OLSON_VERSION = '2022f'
+ 
+ fmt = '%Y-%m-%d %H:%M:%S %Z%z'
+ 

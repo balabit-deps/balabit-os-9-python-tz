@@ -1,0 +1,117 @@
+From: Stuart Bishop <stuart@stuartbishop.net>
+Date: Sat, 13 Aug 2022 12:00:26 +1000
+Subject: Revert inclusion of PACKRATDATA=backzone
+
+Per https://github.com/python/tzdata/issues/53#issuecomment-1213628767
+
+I chose to include backzone in pytz in an attempt to head off problems:
+
+  Changes to past timestamps
+
+    Finish moving to 'backzone' the location-based zones whose
+    timestamps since 1970 are duplicates; adjust links accordingly.
+    This change ordinarily affects only pre-1970 timestamps, and with
+    the new PACKRATLIST option it does not affect any timestamps.
+    In this round the affected zones are Antarctica/Vostok,
+    Asia/Brunei, Asia/Kuala_Lumpur, Atlantic/Reykjavik,
+    Europe/Amsterdam, Europe/Copenhagen, Europe/Luxembourg,
+    Europe/Monaco, Europe/Oslo, Europe/Stockholm, Indian/Christmas,
+    Indian/Cocos, Indian/Kerguelen, Indian/Mahe, Indian/Reunion,
+    Pacific/Chuuk, Pacific/Funafuti, Pacific/Majuro, Pacific/Pohnpei,
+    Pacific/Wake and Pacific/Wallis, and the affected links are
+    Arctic/Longyearbyen, Atlantic/Jan_Mayen, Iceland, Pacific/Ponape,
+    Pacific/Truk, and Pacific/Yap.
+
+This upstream change modifies some of the pre-1970 transitions in obscure
+ways that almost zero users will actually care about, and where quite
+likely dubious in any case. Such as the times pre-1970 when Belfast was
+not on London time or when Amsterdam switched from being 18-20 minutes
+ahead of GMT to GMT. Changes to historical timezones has always happened
+in the upstream database, and normally they are called corrections
+(which only causes breakage if you area storing wallclock times rather
+than UTC timestamps).
+
+Origin: https://github.com/stub42/pytz/commit/07aa4d962dae5cb7ced4f61fe85a9001a01676df
+---
+ README.rst                |  2 +-
+ pytz/tests/test_tzinfo.py | 47 -----------------------------------------------
+ 2 files changed, 1 insertion(+), 48 deletions(-)
+
+diff --git a/README.rst b/README.rst
+index 1437ead..9eaa98c 100644
+--- a/README.rst
++++ b/README.rst
+@@ -91,7 +91,7 @@ Unfortunately using the tzinfo argument of the standard datetime
+ constructors ''does not work'' with pytz for many timezones.
+ 
+ >>> datetime(2002, 10, 27, 12, 0, 0, tzinfo=amsterdam).strftime(fmt)  # /!\ Does not work this way!
+-'2002-10-27 12:00:00 LMT+0020'
++'2002-10-27 12:00:00 LMT+0018'
+ 
+ It is safe for timezones without daylight saving transitions though, such
+ as UTC:
+diff --git a/pytz/tests/test_tzinfo.py b/pytz/tests/test_tzinfo.py
+index 7d09617..1d67de6 100644
+--- a/pytz/tests/test_tzinfo.py
++++ b/pytz/tests/test_tzinfo.py
+@@ -612,33 +612,6 @@ class ReferenceUSEasternDSTEndTestCase(USEasternDSTEndTestCase):
+ 
+ class LocalTestCase(unittest.TestCase):
+     def testLocalize(self):
+-        loc_tz = pytz.timezone('Europe/Amsterdam')
+-
+-        loc_time = loc_tz.localize(datetime(1930, 5, 10, 0, 0, 0))
+-        # Actually +00:19:32, but Python datetime rounds this
+-        self.assertEqual(loc_time.strftime('%Z%z'), 'AMT+0020')
+-
+-        loc_time = loc_tz.localize(datetime(1930, 5, 20, 0, 0, 0))
+-        # Actually +00:19:32, but Python datetime rounds this
+-        self.assertEqual(loc_time.strftime('%Z%z'), 'NST+0120')
+-
+-        loc_time = loc_tz.localize(datetime(1940, 5, 10, 0, 0, 0))
+-        # pre-2017a, abbreviation was NCT
+-        self.assertEqual(loc_time.strftime('%Z%z'), '+0020+0020')
+-
+-        loc_time = loc_tz.localize(datetime(1940, 5, 20, 0, 0, 0))
+-        self.assertEqual(loc_time.strftime('%Z%z'), 'CEST+0200')
+-
+-        loc_time = loc_tz.localize(datetime(2004, 2, 1, 0, 0, 0))
+-        self.assertEqual(loc_time.strftime('%Z%z'), 'CET+0100')
+-
+-        loc_time = loc_tz.localize(datetime(2004, 4, 1, 0, 0, 0))
+-        self.assertEqual(loc_time.strftime('%Z%z'), 'CEST+0200')
+-
+-        loc_time = loc_tz.localize(datetime(1943, 3, 29, 1, 59, 59))
+-        self.assertEqual(loc_time.strftime('%Z%z'), 'CET+0100')
+-
+-        # Switch to US
+         loc_tz = pytz.timezone('US/Eastern')
+ 
+         # End of DST ambiguity check
+@@ -712,26 +685,6 @@ class LocalTestCase(unittest.TestCase):
+             '2004-04-04 01:50:00 EST-0500'
+         )
+ 
+-    def testPartialMinuteOffsets(self):
+-        # utcoffset in Amsterdam was not a whole minute until 1937
+-        # However, we fudge this by rounding them, as the Python
+-        # datetime library
+-        tz = pytz.timezone('Europe/Amsterdam')
+-        utc_dt = datetime(1914, 1, 1, 13, 40, 28, tzinfo=UTC)  # correct
+-        utc_dt = utc_dt.replace(second=0)  # But we need to fudge it
+-        loc_dt = utc_dt.astimezone(tz)
+-        self.assertEqual(
+-            loc_dt.strftime('%Y-%m-%d %H:%M:%S %Z%z'),
+-            '1914-01-01 14:00:00 AMT+0020'
+-        )
+-
+-        # And get back...
+-        utc_dt = loc_dt.astimezone(UTC)
+-        self.assertEqual(
+-            utc_dt.strftime('%Y-%m-%d %H:%M:%S %Z%z'),
+-            '1914-01-01 13:40:00 UTC+0000'
+-        )
+-
+     def no_testCreateLocaltime(self):
+         # It would be nice if this worked, but it doesn't.
+         tz = pytz.timezone('Europe/Amsterdam')

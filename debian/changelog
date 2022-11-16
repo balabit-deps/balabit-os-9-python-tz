@@ -1,3 +1,10 @@
+python-tz (2022.1-1ubuntu0.22.04.0) jammy; urgency=medium
+
+  * test: Revert inclusion of PACKRATDATA=backzone
+  * Update timezones to tzdata 2022f (LP: #1995864)
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 16 Nov 2022 15:19:43 +0100
+
 python-tz (2022.1-1) unstable; urgency=medium
 
   * New upstream release
