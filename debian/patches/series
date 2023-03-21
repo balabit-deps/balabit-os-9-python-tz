@@ -1,3 +1,4 @@
 tzdata
 Revert-inclusion-of-PACKRATDATA-backzone.patch
-Update-timezones-to-tzdata-2022f.patch
+Dynamically-determine-list-of-available-and-common-timezo.patch
+Determine-IANA-nee-Olson-database-version-dynamically.patch

@@ -1,3 +1,11 @@
+python-tz (2022.1-1ubuntu0.22.04.1) jammy; urgency=medium
+
+  * Dynamically determine list of available and common timezones (LP: #207604)
+  * Determine IANA (nee Olson) database version dynamically
+  * Add autopkgtests to run unittest and own regression tests
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 21 Mar 2023 12:45:55 +0100
+
 python-tz (2022.1-1ubuntu0.22.04.0) jammy; urgency=medium
 
   * test: Revert inclusion of PACKRATDATA=backzone
